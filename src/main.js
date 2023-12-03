@@ -38,6 +38,7 @@ let config = {
 let game = new Phaser.Game(config);
 
 let gameActive = false;
+let restarted = false;
 
 //set UI sizes
 let {width, height} = game.config;

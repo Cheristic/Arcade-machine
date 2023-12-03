@@ -37,10 +37,8 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
         super.preUpdate(delta, time);
 
         // CHECK FOR END OF GAME
-        if (this.currentHealth <= 0) {
-            fighter.anims.stop();
-            fighter.setTexture(fighter.deadAnim);
-            gameEventManager.emit('end game', this);
+        if (this.currentHealth <= 0 && gameActive) {
+            gameEventManager.emit('end game', this.fighterType);
         }
     }  
 
@@ -64,7 +62,7 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
         || move == "mid" &&  this.currentState == "low"
         || move == "low" && this.currentState == "high") {
             // HANDLE SUPER EFFECTIVE
-            this.currentHealth -= 15;
+            this.currentHealth -= 50;
             this.fighterFSM.transition("hit");
             return;
         }
@@ -78,6 +76,7 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
 
 class IdleState extends State {
     enter(scene, fighter) {
+        if (!gameActive) return;
         fighter.anims.stop();
         fighter.anims.play(fighter.idleAnim, true);
         fighter.currentState = "idle";
@@ -100,6 +99,7 @@ class IdleState extends State {
 
 class HighHitState extends State {
     enter(scene, fighter) {
+        if (!gameActive) return;
         fighter.anims.play(fighter.highHitAnim, true);
         fighter.once('animationcomplete', () => {
             fighter.isAttacking = false;
@@ -119,6 +119,7 @@ class HighHitState extends State {
 
 class MidHitState extends State {
     enter(scene, fighter) {
+        if (!gameActive) return;
         fighter.anims.play(fighter.midHitAnim, true);
         fighter.once('animationcomplete', () => {
             fighter.isAttacking = false;
@@ -138,6 +139,7 @@ class MidHitState extends State {
 
 class LowHitState extends State {
     enter(scene, fighter) {
+        if (!gameActive) return;
         fighter.anims.play(fighter.lowHitAnim, true);
         fighter.once('animationcomplete', () => {
             fighter.isAttacking = false;
@@ -162,6 +164,7 @@ class HighBlockState extends State {
         fighter.currentState = "block_high";
     }
     execute(scene, fighter) {
+        if (!gameActive) return;
         if (Phaser.Input.Keyboard.JustUp(fighter.keyHigh)) {
             this.stateMachine.transition('high');
         }
@@ -181,6 +184,7 @@ class HighBlockState extends State {
 }
 class MidBlockState extends State {
     enter(scene, fighter) {
+        if (!gameActive) return;
         fighter.anims.stop();
         fighter.setTexture(fighter.midHitAnim, 0);
         fighter.currentState = "block_mid";
@@ -205,6 +209,7 @@ class MidBlockState extends State {
 }
 class LowBlockState extends State {
     enter(scene, fighter) {
+        if (!gameActive) return;
         fighter.anims.stop();
         fighter.setTexture(fighter.lowHitAnim, 0);
         fighter.currentState = "block_low";
@@ -230,6 +235,7 @@ class LowBlockState extends State {
 
 class DamagedState extends State {
     enter(scene, fighter) {
+        if (!gameActive) return;
         fighter.anims.stop();
         fighter.setTexture(fighter.hitAnim);
         fighter.currentState = "hit";
@@ -241,6 +247,7 @@ class DamagedState extends State {
 
 class BlockedState extends State {
     enter(scene, fighter) {
+        if (!gameActive) return;
         fighter.anims.stop();
         fighter.setTexture(fighter.blockAnim);
         fighter.currentState = "block";

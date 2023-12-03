@@ -39,7 +39,6 @@ class Play extends Phaser.Scene {
         this.marHealthBarG = this.add.sprite(scr_width/2+280, 50, "health-bar-green").setOrigin(1, 0.5);
 
 
-
         this.speckContainer.addMultiple([this.fightbg, this.marioFighter, this.luigiFighter, this.lugHealthBarY, 
             this.lugHealthBarG, this.marHealthBarY, this.marHealthBarG]);
         this.updateGroup = this.add.group([this.fightbg, this.marioFighter, this.luigiFighter, this.lugHealthBarY, 
@@ -68,7 +67,6 @@ class Play extends Phaser.Scene {
             this.luigiFighter.fighterFSM.step();
         }
 
-        
 
         // Render skewed objects
         this.image.rt.clear();
@@ -84,11 +82,11 @@ class Play extends Phaser.Scene {
 
     endGame(fighter) {
         gameActive = false;
-        if (!this.scene.isActive('gameOverScene')) {
-            this.scene.launch('gameOverScene', {winner: fighter});
+        if (fighter == "mario") {
+            this.scene.launch('gameOverScene', {winner: this.luigiFighter, loser: this.marioFighter});
         } else {
-            this.scene.get('gameOverScene').restart();
-            this.scene.resume('gameOverScene', {winner: fighter});
+            this.scene.launch('gameOverScene', {winner: this.marioFighter, loser: this.luigiFighter});
         }
+        
     }
 }

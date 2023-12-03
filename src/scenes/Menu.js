@@ -29,13 +29,12 @@ class Menu extends Phaser.Scene {
     update() {
         if (!this.started && Phaser.Input.Keyboard.JustDown(this.spaceKEY)) {
             this.started = true;
-            if (!this.scene.isActive('playScene')) {
-                this.scene.launch('playScene');
+            if (restarted) {
+                this.scene.start('playScene');
             } else {
-                this.scene.get('playScene').restart();
-                this.scene.resume('playScene');
+                this.scene.start('playScene');
             }
-            this.scene.stop('menuScene');
+            
         }
     }
 
