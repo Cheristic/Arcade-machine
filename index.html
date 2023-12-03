@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arcade Machine From Animal Crossing</title>
+    <script src="./lib/phaser.js"></script>
+    <script src="./lib/StateMachine.js"></script>
+    <script src="./src/prefabs/Fighter.js"></script>
+    <script src="./src/prefabs/FighterMario.js"></script>
+    <script src="./src/prefabs/FighterLuigi.js"></script>
+    <script src="./src/scenes/Load.js"></script>
+    <script src="./src/scenes/Menu.js"></script>
+    <script src="./src/scenes/Play.js"></script>
+    <script src="./src/scenes/GameOver.js"></script>
+    <script src="./src/main.js"></script>
     <style>
         body {
-            background-color: beige;
+            background-color: #fce798;
         }
         @font-face {
             font-family: "Source Code Pro";
@@ -16,14 +26,6 @@
     <div style="font-family:Source Code Pro; position: absolute; left:-1000px; visibility:hidden;">.</div>
 </head>
 <body>
-    <script src="./lib/phaser.js"></script>
-    <script src="./lib/StateMachine.js"></script>
-    <script src="./src/prefabs/Fighter.js"></script>
-    <script src="./src/prefabs/FighterMario.js"></script>
-    <script src="./src/prefabs/FighterLuigi.js"></script>
-    <script src="./src/scenes/Load.js"></script>
-    <script src="./src/scenes/Menu.js"></script>
-    <script src="./src/scenes/Play.js"></script>
-    <script src="./src/main.js"></script>
+    <div id="myGame"></div>
 </body>
 </html>

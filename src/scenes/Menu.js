@@ -21,12 +21,21 @@ class Menu extends Phaser.Scene {
         'Press SPACE to Begin', menuConfig).setOrigin(0.5);
 
         this.started = false;
+
+        this.spaceKEY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
     }
 
     update() {
-        if (!this.started) {
+        if (!this.started && Phaser.Input.Keyboard.JustDown(this.spaceKEY)) {
             this.started = true;
-            this.scene.start('playScene')
+            if (!this.scene.isActive('playScene')) {
+                this.scene.launch('playScene');
+            } else {
+                this.scene.get('playScene').restart();
+                this.scene.resume('playScene');
+            }
+            this.scene.stop('menuScene');
         }
     }
 

@@ -11,7 +11,7 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
 
         this.currentState = "idle";
 
-        this.currentHealth = 20;
+        this.currentHealth = 100;
 
         this.fighterFSM = new StateMachine('idle', {
             idle: new IdleState(),
@@ -19,41 +19,58 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
             mid: new MidHitState(),
             low: new LowHitState(),
             hit: new DamagedState(),
-            block: new BlockedState()
+            block: new BlockedState(),
+            block_high: new HighBlockState(),
+            block_mid: new MidBlockState(),
+            block_low: new LowBlockState()
         }, [scene, this]);
+
+        this.blockDelay = 500;
+        this.hitDelay = 1000;
+
+        this.isAttacking = false;
 
         moveEventManager.on("opponentAttack", this.handleMoveCheck, this)
     }
 
     preUpdate(delta, time) {
         super.preUpdate(delta, time);
+
+        // CHECK FOR END OF GAME
+        if (this.currentHealth <= 0) {
+            fighter.anims.stop();
+            fighter.setTexture(fighter.deadAnim);
+            gameEventManager.emit('end game', this);
+        }
     }  
 
     handleMoveCheck(fighterType, move) {
         if(fighterType == this.fighterType) return;
+        if (this.currentState == "hit" || this.currentState == "block") return;
 
         if (this.currentState == "idle") {
             // BLOCKED + recoil
-            this.currentHealth -= 1;
+            this.currentHealth -= 5;
             this.fighterFSM.transition('block');
             return;
-        } else if (move == "high" && this.currentState == "block-high" 
-        || move == "mid" &&  this.currentState == "block-mid"
-        || move == "low" && this.currentState == "block-low"
-        || move == this.currentState) {
+        } else if (move == "high" && this.currentState == "block_high" 
+        || move == "mid" &&  this.currentState == "block_mid"
+        || move == "low" && this.currentState == "block_low"
+        || move == this.currentState || move == "high" && this.currentState == "block_low"
+        || move == "high" && this.currentState == "low") {
             // BLOCKED BUT NO RECOIL OR DAMAGE
             return;
         } else if (move == "high" && this.currentState == "mid" 
         || move == "mid" &&  this.currentState == "low"
         || move == "low" && this.currentState == "high") {
             // HANDLE SUPER EFFECTIVE
-            this.currentHealth -= 5;
+            this.currentHealth -= 15;
             this.fighterFSM.transition("hit");
             return;
         }
 
         // If none of these conditions are met = regular hit + recoil
-        this.currentHealth -= 3;
+        this.currentHealth -= 9;
         this.fighterFSM.transition("hit");
         return;
     }
@@ -67,15 +84,15 @@ class IdleState extends State {
     }
     execute(scene, fighter) {
         if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
-            this.stateMachine.transition('high');
+            this.stateMachine.transition('block_high');
             return;
         }
         if(Phaser.Input.Keyboard.JustDown(fighter.keyMid)) {
-            this.stateMachine.transition('mid');
+            this.stateMachine.transition('block_mid');
             return;
         }
         if(Phaser.Input.Keyboard.JustDown(fighter.keyLow)) {
-            this.stateMachine.transition('low');
+            this.stateMachine.transition('block_low');
             return;
         }
     }
@@ -85,29 +102,17 @@ class HighHitState extends State {
     enter(scene, fighter) {
         fighter.anims.play(fighter.highHitAnim, true);
         fighter.once('animationcomplete', () => {
+            fighter.isAttacking = false;
             this.stateMachine.transition('idle');
         });
-        fighter.currentState = "block-high";
+        fighter.currentState = "high";
     }
     execute(scene, fighter) {
-        if(fighter.anims.currentFrame.index == 6) {
+        if(fighter.anims.currentFrame.index == 2) {
             // INITIATE HIT
+            if (fighter.isAttacking) return;
+            fighter.isAttacking = true;
             moveEventManager.emit("opponentAttack", fighter.fighterType, "high");
-            fighter.currentState = "high";
-        }
-        if (fighter.anims.currentFrame.index < 6) {
-            if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
-                this.stateMachine.transition('high');
-                return;
-            }
-            if(Phaser.Input.Keyboard.JustDown(fighter.keyMid)) {
-                this.stateMachine.transition('mid');
-                return;
-            }
-            if(Phaser.Input.Keyboard.JustDown(fighter.keyLow)) {
-                this.stateMachine.transition('low');
-                return;
-            }
         }
     }
 }
@@ -116,29 +121,17 @@ class MidHitState extends State {
     enter(scene, fighter) {
         fighter.anims.play(fighter.midHitAnim, true);
         fighter.once('animationcomplete', () => {
+            fighter.isAttacking = false;
             this.stateMachine.transition('idle');
         });
-        fighter.currentState = "block-mid";
+        fighter.currentState = "mid";
     }
     execute(scene, fighter) {
-        if(fighter.anims.currentFrame.index == 6) {
+        if(fighter.anims.currentFrame.index == 2) {
             // INITIATE HIT
+            if (fighter.isAttacking) return;
+            fighter.isAttacking = true;
             moveEventManager.emit("opponentAttack", fighter.fighterType, "mid");
-            fighter.currentState = "mid";
-        }
-        if (fighter.anims.currentFrame.index < 6) {
-            if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
-                this.stateMachine.transition('high');
-                return;
-            }
-            if(Phaser.Input.Keyboard.JustDown(fighter.keyMid)) {
-                this.stateMachine.transition('mid');
-                return;
-            }
-            if(Phaser.Input.Keyboard.JustDown(fighter.keyLow)) {
-                this.stateMachine.transition('low');
-                return;
-            }
         }
     }
 }
@@ -147,29 +140,90 @@ class LowHitState extends State {
     enter(scene, fighter) {
         fighter.anims.play(fighter.lowHitAnim, true);
         fighter.once('animationcomplete', () => {
+            fighter.isAttacking = false;
             this.stateMachine.transition('idle');
         });
-        fighter.currentState = "block-low";
+        fighter.currentState = "low";
     }
     execute(scene, fighter) {
-        if(fighter.anims.currentFrame.index == 6) {
+        if(fighter.anims.currentFrame.index == 2) {
             // INITIATE HIT
+            if (fighter.isAttacking) return;
+            fighter.isAttacking = true;
             moveEventManager.emit("opponentAttack", fighter.fighterType, "low");
-            fighter.currentState = "low";
         }
-        if (fighter.anims.currentFrame.index < 6) {
-            if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
-                this.stateMachine.transition('high');
-                return;
-            }
-            if(Phaser.Input.Keyboard.JustDown(fighter.keyMid)) {
-                this.stateMachine.transition('mid');
-                return;
-            }
-            if(Phaser.Input.Keyboard.JustDown(fighter.keyLow)) {
-                this.stateMachine.transition('low');
-                return;
-            }
+    }
+}
+
+class HighBlockState extends State {
+    enter(scene, fighter) {
+        fighter.anims.stop();
+        fighter.setTexture(fighter.highHitAnim, 0);
+        fighter.currentState = "block_high";
+    }
+    execute(scene, fighter) {
+        if (Phaser.Input.Keyboard.JustUp(fighter.keyHigh)) {
+            this.stateMachine.transition('high');
+        }
+        if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
+            this.stateMachine.transition('block_high');
+            return;
+        }
+        if(Phaser.Input.Keyboard.JustDown(fighter.keyMid)) {
+            this.stateMachine.transition('block_mid');
+            return;
+        }
+        if(Phaser.Input.Keyboard.JustDown(fighter.keyLow)) {
+            this.stateMachine.transition('block_low');
+            return;
+        }
+    }
+}
+class MidBlockState extends State {
+    enter(scene, fighter) {
+        fighter.anims.stop();
+        fighter.setTexture(fighter.midHitAnim, 0);
+        fighter.currentState = "block_mid";
+    }
+    execute(scene, fighter) {
+        if (Phaser.Input.Keyboard.JustUp(fighter.keyMid)) {
+            this.stateMachine.transition('mid');
+        }
+        if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
+            this.stateMachine.transition('block_high');
+            return;
+        }
+        if(Phaser.Input.Keyboard.JustDown(fighter.keyMid)) {
+            this.stateMachine.transition('block_mid');
+            return;
+        }
+        if(Phaser.Input.Keyboard.JustDown(fighter.keyLow)) {
+            this.stateMachine.transition('block_low');
+            return;
+        }
+    }
+}
+class LowBlockState extends State {
+    enter(scene, fighter) {
+        fighter.anims.stop();
+        fighter.setTexture(fighter.lowHitAnim, 0);
+        fighter.currentState = "block_low";
+    }
+    execute(scene, fighter) {
+        if (Phaser.Input.Keyboard.JustUp(fighter.keyLow)) {
+            this.stateMachine.transition('low');
+        }
+        if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
+            this.stateMachine.transition('block_high');
+            return;
+        }
+        if(Phaser.Input.Keyboard.JustDown(fighter.keyMid)) {
+            this.stateMachine.transition('block_mid');
+            return;
+        }
+        if(Phaser.Input.Keyboard.JustDown(fighter.keyLow)) {
+            this.stateMachine.transition('block_low');
+            return;
         }
     }
 }
@@ -177,9 +231,9 @@ class LowHitState extends State {
 class DamagedState extends State {
     enter(scene, fighter) {
         fighter.anims.stop();
-        fighter.anims.play(fighter.idleAnim, true);
+        fighter.setTexture(fighter.hitAnim);
         fighter.currentState = "hit";
-        scene.time.delayedCall(1000, () => {
+        scene.time.delayedCall(fighter.hitDelay, () => {
             this.stateMachine.transition('idle');
         }, null, this);
     }
@@ -188,9 +242,9 @@ class DamagedState extends State {
 class BlockedState extends State {
     enter(scene, fighter) {
         fighter.anims.stop();
-        fighter.anims.play(fighter.idleAnim, true);
-        fighter.currentState = "hit";
-        scene.time.delayedCall(1000, () => {
+        fighter.setTexture(fighter.blockAnim);
+        fighter.currentState = "block";
+        scene.time.delayedCall(fighter.blockDelay, () => {
             this.stateMachine.transition('idle');
         }, null, this);
     }
