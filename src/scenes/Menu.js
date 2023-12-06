@@ -9,7 +9,7 @@ class Menu extends Phaser.Scene {
             fontStyle: 'Bold',
             fontSize: '28px',
             color: '#A9E010',
-            align: 'right',
+            align: 'center',
             padding: {
                 top: 5,
                 bottom: 5,
@@ -17,8 +17,12 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         };
 
-        this.add.text(game.config.width/2,game.config.height/2,
+        this.add.text(game.config.width/2,game.config.height/2+100,
         'Press SPACE to Begin', menuConfig).setOrigin(0.5);
+
+        menuConfig.fontSize = '40px'
+        this.add.text(game.config.width/2,scr_height-200,
+        'ARCADE MACHINE\nfrom\nANIMAL CROSSING', menuConfig).setOrigin(0.5);
 
         this.started = false;
 
