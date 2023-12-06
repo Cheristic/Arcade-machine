@@ -5,10 +5,18 @@ class GameOver extends Phaser.Scene {
     }
 
     init(data) {
-        data.winner.anims.stop();
-        data.winner.anims.play(data.winner.winAnim, true);
-        data.loser.anims.stop();
-        data.loser.setTexture(data.loser.deadAnim);
+        if (data.tie == "yes") { // TIE
+            data.winner.anims.stop();
+            data.winner.anims.play(data.winner.winAnim, true);
+            data.loser.anims.stop();
+            data.loser.anims.play(data.loser.winAnim, true);
+        } else {
+            data.winner.anims.stop();
+            data.winner.anims.play(data.winner.winAnim, true);
+            data.loser.anims.stop();
+            data.loser.setTexture(data.loser.deadAnim);
+        }
+        
     }
 
     create() {
@@ -27,7 +35,7 @@ class GameOver extends Phaser.Scene {
         };
 
         this.add.text(game.config.width/2,game.config.height/2+100,
-        'YOU DIED', menuConfig).setOrigin(0.5);
+        'GAME OVER', menuConfig).setOrigin(0.5);
 
         menuConfig.fontSize = '20px';
         this.add.text(game.config.width/2,game.config.height/2+130,

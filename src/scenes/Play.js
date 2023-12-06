@@ -16,6 +16,9 @@ class Play extends Phaser.Scene {
         // This will activate after 3 seconds and the game will begin
         this.countdownTimer = this.time.delayedCall(3000, () => {
             gameActive = true;
+            this.gameTimer = this.time.delayedCall(timerLength, () => {
+                gameEventManager.emit('end game', null);
+            }, null, this);
         }, null, this);
         
         this.speckContainer = this.add.rexContainerLite(0 ,0, width, height);
@@ -41,18 +44,34 @@ class Play extends Phaser.Scene {
         this.explosion = this.add.sprite(0, 0, "explosion");
         this.explosion.setVisible(false);
 
+        this.gameTimerTextConfig = {
+            fontFamily: 'Pixel',
+            fontSize: '40px',
+            color: '#DE0000',
+            align: 'center',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 0
+        };
+
+        this.gameTimerText = this.add.text(scr_width/2, 50, 
+            "", this.gameTimerTextConfig).setOrigin(0.5);
+
 
         this.speckContainer.addMultiple([this.fightbg, this.marioFighter, this.luigiFighter, this.lugHealthBarY, 
-            this.lugHealthBarG, this.marHealthBarY, this.marHealthBarG, this.explosion]);
+            this.lugHealthBarG, this.marHealthBarY, this.marHealthBarG, this.gameTimerText, this.explosion]);
         this.updateGroup = this.add.group([this.fightbg, this.marioFighter, this.luigiFighter, this.lugHealthBarY, 
-            this.lugHealthBarG, this.marHealthBarY, this.marHealthBarG]);        
+            this.lugHealthBarG, this.marHealthBarY, this.marHealthBarG, this.gameTimerText]);        
         this.perspective = this.plugins.get('rexperspectiveimageplugin').addContainerPerspective(this.speckContainer, {
             useParentBounds: false,
         });
         this.image.transformVerts(0, 0, 0, -.210, 0, 0)
         this.perspective.enter();        
 
-        gameEventManager.on('end game', this.endGame, this)
+        gameEventManager.on('end game', this.endGame, this);
+
 
         // #### DEBUGGING ####
         this.debugKEY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -68,8 +87,10 @@ class Play extends Phaser.Scene {
 
             this.marioFighter.fighterFSM.step();
             this.luigiFighter.fighterFSM.step();
-        }
 
+            // Update timer
+            this.gameTimerText.text = Math.ceil(this.gameTimer.getRemainingSeconds());
+        }
 
         // Render skewed objects
         this.image.rt.clear();
@@ -85,21 +106,41 @@ class Play extends Phaser.Scene {
 
     endGame(fighter) {
         gameActive = false;
-        this.sound.play(`explosion`, {volume: 1});
+        this.gameTimer.remove(false);
         this.sound.play(`win`, {volume: 1});
-        if (fighter == "mario") {
-            this.marHealthBarG.scaleX = 0;
-            this.explosion.setPosition(scr_width/2+120, scr_height/2-140)
-            this.updateGroup.add(this.explosion);
-            this.explosion.anims.play('explosion');
-            this.scene.launch('gameOverScene', {winner: this.luigiFighter, loser: this.marioFighter});
+        if (fighter == null) { // TIME RAN OUT
+            this.gameTimerText.text = 0;
+            if (this.marioFighter.currentHealth > this.luigiFighter.currentHealth) { // MARIO WINS
+                this.sound.play(`explosion`, {volume: 1});
+                this.explosion.setPosition(scr_width/2-120, scr_height/2-140)
+                this.updateGroup.add(this.explosion);
+                this.explosion.anims.play('explosion');
+                this.scene.launch('gameOverScene', {winner: this.marioFighter, loser: this.luigiFighter, tie: "no"});
+            } else if (this.marioFighter.currentHealth > this.luigiFighter.currentHealth) { // LUIGI WINS
+                this.sound.play(`explosion`, {volume: 1});
+                this.explosion.setPosition(scr_width/2+120, scr_height/2-140)
+                this.updateGroup.add(this.explosion);
+                this.explosion.anims.play('explosion');
+                this.scene.launch('gameOverScene', {winner: this.luigiFighter, loser: this.marioFighter, tie: "no"});
+            } else { // EXACT SAME HEALTH
+                this.scene.launch('gameOverScene', {winner: this.luigiFighter, loser: this.marioFighter, tie: "yes"});
+            }
         } else {
-            this.lugHealthBarG.scaleX = 0;
-            this.explosion.setPosition(scr_width/2-120, scr_height/2-140)
-            this.updateGroup.add(this.explosion);
-            this.explosion.anims.play('explosion');
-            this.scene.launch('gameOverScene', {winner: this.marioFighter, loser: this.luigiFighter});
-        }  
+            this.sound.play(`explosion`, {volume: 1});
+            if (fighter == "mario") {
+                this.marHealthBarG.scaleX = 0;
+                this.explosion.setPosition(scr_width/2+120, scr_height/2-140)
+                this.updateGroup.add(this.explosion);
+                this.explosion.anims.play('explosion');
+                this.scene.launch('gameOverScene', {winner: this.luigiFighter, loser: this.marioFighter, tie: "no"});
+            } else {
+                this.lugHealthBarG.scaleX = 0;
+                this.explosion.setPosition(scr_width/2-120, scr_height/2-140)
+                this.updateGroup.add(this.explosion);
+                this.explosion.anims.play('explosion');
+                this.scene.launch('gameOverScene', {winner: this.marioFighter, loser: this.luigiFighter, tie: "no"});
+            }  
+        }
     }
 
     onDestroy() {

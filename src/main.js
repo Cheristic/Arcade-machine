@@ -45,5 +45,7 @@ let {width, height} = game.config;
 
 let scr_width = 609, scr_height = 658;
 
+let timerLength = 60000;
+
 let moveEventManager = new Phaser.Events.EventEmitter();
 let gameEventManager = new Phaser.Events.EventEmitter();
