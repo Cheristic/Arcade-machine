@@ -7,7 +7,7 @@ CHECKLIST
 - Create luigi sprites/animations
 - Create clickable note system
 - Main Menu navigation
-- Hurt/Block/Death animations
+- Sound
 
 STRETCH
 - Make nicer fight backgrounds that randomize

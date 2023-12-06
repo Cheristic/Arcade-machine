@@ -82,9 +82,13 @@ class Play extends Phaser.Scene {
 
     endGame(fighter) {
         gameActive = false;
+        this.sound.play(`explosion`, {volume: 1});
+        this.sound.play(`win`, {volume: 1});
         if (fighter == "mario") {
+            this.marHealthBarG.scaleX = 0;
             this.scene.launch('gameOverScene', {winner: this.luigiFighter, loser: this.marioFighter});
         } else {
+            this.lugHealthBarG.scaleX = 0;
             this.scene.launch('gameOverScene', {winner: this.marioFighter, loser: this.luigiFighter});
         }
         

@@ -45,6 +45,18 @@ class Load extends Phaser.Scene {
         this.load.image('health-bar-green', './assets/health-bar-green.png');
         this.load.image('health-bar-yellow', './assets/health-bar-yellow.png');
 
+        this.load.audio('block0', ['./assets/block0_sfx.wav'])
+        this.load.audio('block1', ['./assets/block1_sfx.wav'])
+        this.load.audio('block2', ['./assets/block2_sfx.wav'])
+        this.load.audio('dmg0', ['./assets/dmg0_sfx.wav'])
+        this.load.audio('dmg1', ['./assets/dmg1_sfx.wav'])
+        this.load.audio('dmg2', ['./assets/dmg2_sfx.wav'])
+        this.load.audio('super_dmg0', ['./assets/super_dmg0_sfx.wav'])
+        this.load.audio('super_dmg1', ['./assets/super_dmg1_sfx.wav'])
+        this.load.audio('super_dmg2', ['./assets/super_dmg2_sfx.wav'])
+        this.load.audio('win', ['./assets/win_sfx.wav'])
+        this.load.audio('explosion', ['./assets/explosion_sfx.wav'])
+
     }
 
     create() {

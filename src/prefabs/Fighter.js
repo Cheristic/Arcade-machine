@@ -50,6 +50,8 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
             // BLOCKED + recoil
             this.currentHealth -= 5;
             this.fighterFSM.transition('block');
+            let rand = Phaser.Math.RND.between(0, 2);
+            this.scene.sound.play(`block${rand}`, {volume: 1});
             return;
         } else if (move == "high" && this.currentState == "block_high" 
         || move == "mid" &&  this.currentState == "block_mid"
@@ -57,19 +59,25 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
         || move == this.currentState || move == "high" && this.currentState == "block_low"
         || move == "high" && this.currentState == "low") {
             // BLOCKED BUT NO RECOIL OR DAMAGE
+            let rand = Phaser.Math.RND.between(0, 2);
+            this.scene.sound.play(`block${rand}`, {volume: 1});
             return;
         } else if (move == "high" && this.currentState == "mid" 
         || move == "mid" &&  this.currentState == "low"
         || move == "low" && this.currentState == "high") {
             // HANDLE SUPER EFFECTIVE
-            this.currentHealth -= 50;
+            this.currentHealth -= 15;
             this.fighterFSM.transition("hit");
+            let rand = Phaser.Math.RND.between(0, 2);
+            this.scene.sound.play(`super_dmg${rand}`, {volume: 1});
             return;
         }
 
         // If none of these conditions are met = regular hit + recoil
         this.currentHealth -= 9;
         this.fighterFSM.transition("hit");
+        let rand = Phaser.Math.RND.between(0, 2);
+        this.scene.sound.play(`dmg${rand}`, {volume: 1});
         return;
     }
 }
