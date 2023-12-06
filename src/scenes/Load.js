@@ -86,6 +86,8 @@ class Load extends Phaser.Scene {
             endFrame: 16,
         });
 
+        this.load.image('selector', './assets/selector.png');
+
         this.load.audio('block0', ['./assets/block0_sfx.wav'])
         this.load.audio('block1', ['./assets/block1_sfx.wav'])
         this.load.audio('block2', ['./assets/block2_sfx.wav'])
