@@ -79,6 +79,13 @@ class Load extends Phaser.Scene {
         this.load.image('health-bar-green', './assets/health-bar-green.png');
         this.load.image('health-bar-yellow', './assets/health-bar-yellow.png');
 
+        this.load.spritesheet('explosion', './assets/explosion-Sheet.png', {
+            frameWidth: 142,
+            frameHeight: 200,
+            startFrame: 0,
+            endFrame: 16,
+        });
+
         this.load.audio('block0', ['./assets/block0_sfx.wav'])
         this.load.audio('block1', ['./assets/block1_sfx.wav'])
         this.load.audio('block2', ['./assets/block2_sfx.wav'])
@@ -179,6 +186,13 @@ class Load extends Phaser.Scene {
                 frames: [0, 1]
             }),
             frameRate: 4,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'explosion',
+            frames: this.anims.generateFrameNumbers('explosion'),
+            frameRate: 16,
             repeat: -1
         });
 

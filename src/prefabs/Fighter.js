@@ -67,7 +67,7 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
         || move == "mid" &&  this.currentState == "low"
         || move == "low" && this.currentState == "high") {
             // HANDLE SUPER EFFECTIVE
-            this.currentHealth -= 15;
+            this.currentHealth -= 50;
             this.fighterFSM.transition("hit");
             let rand = Phaser.Math.RND.between(0, 2);
             this.scene.sound.play(`super_dmg${rand}`, {volume: 1});

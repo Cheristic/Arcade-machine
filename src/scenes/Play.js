@@ -38,9 +38,12 @@ class Play extends Phaser.Scene {
         this.marHealthBarY = this.add.sprite(scr_width/2+280, 50, "health-bar-yellow").setOrigin(1, 0.5);
         this.marHealthBarG = this.add.sprite(scr_width/2+280, 50, "health-bar-green").setOrigin(1, 0.5);
 
+        this.explosion = this.add.sprite(0, 0, "explosion");
+        this.explosion.setVisible(false);
+
 
         this.speckContainer.addMultiple([this.fightbg, this.marioFighter, this.luigiFighter, this.lugHealthBarY, 
-            this.lugHealthBarG, this.marHealthBarY, this.marHealthBarG]);
+            this.lugHealthBarG, this.marHealthBarY, this.marHealthBarG, this.explosion]);
         this.updateGroup = this.add.group([this.fightbg, this.marioFighter, this.luigiFighter, this.lugHealthBarY, 
             this.lugHealthBarG, this.marHealthBarY, this.marHealthBarG]);        
         this.perspective = this.plugins.get('rexperspectiveimageplugin').addContainerPerspective(this.speckContainer, {
@@ -86,9 +89,15 @@ class Play extends Phaser.Scene {
         this.sound.play(`win`, {volume: 1});
         if (fighter == "mario") {
             this.marHealthBarG.scaleX = 0;
+            this.explosion.setPosition(scr_width/2+120, scr_height/2-140)
+            this.updateGroup.add(this.explosion);
+            this.explosion.anims.play('explosion');
             this.scene.launch('gameOverScene', {winner: this.luigiFighter, loser: this.marioFighter});
         } else {
             this.lugHealthBarG.scaleX = 0;
+            this.explosion.setPosition(scr_width/2-120, scr_height/2-140)
+            this.updateGroup.add(this.explosion);
+            this.explosion.anims.play('explosion');
             this.scene.launch('gameOverScene', {winner: this.marioFighter, loser: this.luigiFighter});
         }  
     }
@@ -103,6 +112,7 @@ class Play extends Phaser.Scene {
         this.lugHealthBarG.destroy();
         this.lugHealthBarY.destroy();
         this.speckContainer.destroy();
+        this.explosion.destroy();
         this.input.keyboard.clearCaptures();
         gameEventManager.shutdown();
         moveEventManager.shutdown();
