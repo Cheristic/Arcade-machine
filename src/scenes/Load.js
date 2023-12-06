@@ -40,6 +40,40 @@ class Load extends Phaser.Scene {
             endFrame: 1
         });
         this.load.image('mar-dead', './assets/mar-dead.png');
+
+        this.load.spritesheet('lug-idle', './assets/lug-idle-anim.png', {
+            frameWidth: 480,
+            frameHeight: 480,
+            startFrame: 0,
+            endFrame: 1
+        });
+        this.load.spritesheet('lug-high', './assets/lug-highhit-anim.png', {
+            frameWidth: 480,
+            frameHeight: 480,
+            startFrame: 0,
+            endFrame: 2
+        });
+        this.load.spritesheet('lug-mid', './assets/lug-midhit-anim.png', {
+            frameWidth: 480,
+            frameHeight: 480,
+            startFrame: 0,
+            endFrame: 2
+        });
+        this.load.spritesheet('lug-low', './assets/lug-lowhit-anim.png', {
+            frameWidth: 480,
+            frameHeight: 480,
+            startFrame: 0,
+            endFrame: 2
+        });
+        this.load.image('lug-hit', './assets/lug-hit.png');
+        this.load.image('lug-block', './assets/lug-block.png');
+        this.load.spritesheet('lug-win', './assets/lug-win-Sheet.png', {
+            frameWidth: 480,
+            frameHeight: 480,
+            startFrame: 0,
+            endFrame: 1
+        });
+        this.load.image('lug-dead', './assets/lug-dead.png');
         this.load.image('base-platform', './assets/base-platform.png');
 
         this.load.image('health-bar-green', './assets/health-bar-green.png');
@@ -74,30 +108,74 @@ class Load extends Phaser.Scene {
         this.anims.create({
             key: 'mar-high',
             frames: this.anims.generateFrameNumbers('mar-high', {
-                frames: [0, 1, 2, 2, 2, 2, 2, 2]
+                frames: [0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2]
             }),
-            frameRate: 8,
+            frameRate: 12,
             repeat: 0
         });
         this.anims.create({
             key: 'mar-mid',
             frames: this.anims.generateFrameNumbers('mar-mid', {
-                frames: [0, 1, 2, 2, 2, 2, 2, 2]
+                frames: [0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2]
             }),
-            frameRate: 8,
+            frameRate: 12,
             repeat: 0
         });
         this.anims.create({
             key: 'mar-low',
             frames: this.anims.generateFrameNumbers('mar-low', {
-                frames: [0, 1, 2, 2, 2, 2, 2, 2]
+                frames: [0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2]
             }),
-            frameRate: 8,
+            frameRate: 12,
             repeat: 0
         });
         this.anims.create({
             key: 'mar-win',
             frames: this.anims.generateFrameNumbers('mar-win', {
+                frames: [0, 1]
+            }),
+            frameRate: 4,
+            repeat: -1
+        });
+
+        // LUIGI ANIMATIONS
+        this.background = this.add.image(0,0,"machine-bg").setOrigin(0);
+        this.anims.create({
+            key: 'lug-idle',
+            frames: this.anims.generateFrameNames('lug-idle', {
+                start: 0,
+                end: 1
+            }),
+            frameRate: 6,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'lug-high',
+            frames: this.anims.generateFrameNumbers('lug-high', {
+                frames: [0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2]
+            }),
+            frameRate: 12,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'lug-mid',
+            frames: this.anims.generateFrameNumbers('lug-mid', {
+                frames: [0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2]
+            }),
+            frameRate: 12,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'lug-low',
+            frames: this.anims.generateFrameNumbers('lug-low', {
+                frames: [0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2]
+            }),
+            frameRate: 12,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'lug-win',
+            frames: this.anims.generateFrameNumbers('lug-win', {
                 frames: [0, 1]
             }),
             frameRate: 4,

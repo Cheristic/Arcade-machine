@@ -4,6 +4,7 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
+        if (restarted) return;
         this.load.plugin('rexquadimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexquadimageplugin.min.js', true);
         this.load.plugin('rexcontainerliteplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcontainerliteplugin.min.js', true);
         this.load.plugin('rexquadimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexquadimageplugin.min.js', true);
@@ -25,8 +26,7 @@ class Play extends Phaser.Scene {
             height: scr_height,
             add: true
         });
-        
-        
+
         this.fightbg = this.add.sprite(scr_width/2, scr_height/2, "fight-bg0").setOrigin(0.5);
         this.marioFighter = new FighterMario(this, scr_width/2+40, scr_height/2).setOrigin(0.5);
         this.luigiFighter = new FighterLuigi(this, scr_width/2-40, scr_height/2).setOrigin(0.5);
@@ -90,7 +90,22 @@ class Play extends Phaser.Scene {
         } else {
             this.lugHealthBarG.scaleX = 0;
             this.scene.launch('gameOverScene', {winner: this.marioFighter, loser: this.luigiFighter});
-        }
-        
+        }  
+    }
+
+    onDestroy() {
+
+        this.marioFighter.destroy();
+        this.luigiFighter.destroy();
+        this.fightbg.destroy();
+        this.marHealthBarG.destroy();
+        this.marHealthBarY.destroy();
+        this.lugHealthBarG.destroy();
+        this.lugHealthBarY.destroy();
+        this.speckContainer.destroy();
+        this.input.keyboard.clearCaptures();
+        gameEventManager.shutdown();
+        moveEventManager.shutdown();
+
     }
 }

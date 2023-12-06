@@ -27,6 +27,7 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
 
         this.blockDelay = 500;
         this.hitDelay = 1000;
+        this.attackAnticipationFrames = 4;
 
         this.isAttacking = false;
 
@@ -90,6 +91,7 @@ class IdleState extends State {
         fighter.currentState = "idle";
     }
     execute(scene, fighter) {
+        if (!gameActive) return;
         if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
             this.stateMachine.transition('block_high');
             return;
@@ -116,7 +118,7 @@ class HighHitState extends State {
         fighter.currentState = "high";
     }
     execute(scene, fighter) {
-        if(fighter.anims.currentFrame.index == 2) {
+        if(fighter.anims.currentFrame.index == fighter.attackAnticipationFrames) {
             // INITIATE HIT
             if (fighter.isAttacking) return;
             fighter.isAttacking = true;
@@ -136,7 +138,7 @@ class MidHitState extends State {
         fighter.currentState = "mid";
     }
     execute(scene, fighter) {
-        if(fighter.anims.currentFrame.index == 2) {
+        if(fighter.anims.currentFrame.index == fighter.attackAnticipationFrames) {
             // INITIATE HIT
             if (fighter.isAttacking) return;
             fighter.isAttacking = true;
@@ -156,7 +158,7 @@ class LowHitState extends State {
         fighter.currentState = "low";
     }
     execute(scene, fighter) {
-        if(fighter.anims.currentFrame.index == 2) {
+        if(fighter.anims.currentFrame.index == fighter.attackAnticipationFrames) {
             // INITIATE HIT
             if (fighter.isAttacking) return;
             fighter.isAttacking = true;
@@ -173,9 +175,7 @@ class HighBlockState extends State {
     }
     execute(scene, fighter) {
         if (!gameActive) return;
-        if (Phaser.Input.Keyboard.JustUp(fighter.keyHigh)) {
-            this.stateMachine.transition('high');
-        }
+        
         if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
             this.stateMachine.transition('block_high');
             return;
@@ -187,6 +187,9 @@ class HighBlockState extends State {
         if(Phaser.Input.Keyboard.JustDown(fighter.keyLow)) {
             this.stateMachine.transition('block_low');
             return;
+        }
+        if (Phaser.Input.Keyboard.JustUp(fighter.keyHigh)) {
+            this.stateMachine.transition('high');
         }
     }
 }
@@ -198,9 +201,8 @@ class MidBlockState extends State {
         fighter.currentState = "block_mid";
     }
     execute(scene, fighter) {
-        if (Phaser.Input.Keyboard.JustUp(fighter.keyMid)) {
-            this.stateMachine.transition('mid');
-        }
+        if (!gameActive) return;
+        
         if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
             this.stateMachine.transition('block_high');
             return;
@@ -212,6 +214,9 @@ class MidBlockState extends State {
         if(Phaser.Input.Keyboard.JustDown(fighter.keyLow)) {
             this.stateMachine.transition('block_low');
             return;
+        }
+        if (Phaser.Input.Keyboard.JustUp(fighter.keyMid)) {
+            this.stateMachine.transition('mid');
         }
     }
 }
@@ -223,9 +228,8 @@ class LowBlockState extends State {
         fighter.currentState = "block_low";
     }
     execute(scene, fighter) {
-        if (Phaser.Input.Keyboard.JustUp(fighter.keyLow)) {
-            this.stateMachine.transition('low');
-        }
+        if (!gameActive) return;
+        
         if(Phaser.Input.Keyboard.JustDown(fighter.keyHigh)) {
             this.stateMachine.transition('block_high');
             return;
@@ -237,6 +241,9 @@ class LowBlockState extends State {
         if(Phaser.Input.Keyboard.JustDown(fighter.keyLow)) {
             this.stateMachine.transition('block_low');
             return;
+        }
+        if (Phaser.Input.Keyboard.JustUp(fighter.keyLow)) {
+            this.stateMachine.transition('low');
         }
     }
 }
