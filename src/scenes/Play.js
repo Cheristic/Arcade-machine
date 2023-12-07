@@ -116,7 +116,7 @@ class Play extends Phaser.Scene {
                 this.updateGroup.add(this.explosion);
                 this.explosion.anims.play('explosion');
                 this.scene.launch('gameOverScene', {winner: this.marioFighter, loser: this.luigiFighter, tie: "no"});
-            } else if (this.marioFighter.currentHealth > this.luigiFighter.currentHealth) { // LUIGI WINS
+            } else if (this.marioFighter.currentHealth < this.luigiFighter.currentHealth) { // LUIGI WINS
                 this.sound.play(`explosion`, {volume: 1});
                 this.explosion.setPosition(scr_width/2+120, scr_height/2-140)
                 this.updateGroup.add(this.explosion);

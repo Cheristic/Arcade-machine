@@ -65,16 +65,6 @@ class Menu extends Phaser.Scene {
 
     update() {
         this.selectorFSM.step();
-        /*if (!this.started && Phaser.Input.Keyboard.JustDown(this.spaceKEY)) {
-            this.started = true;
-            if (restarted) {
-                //this.scene.get('playScene').onDestroy();
-                this.scene.get('playScene').scene.restart();
-            } else {
-                this.scene.start('playScene');
-            }
-            
-        }*/
     }
 
     startGame() {
