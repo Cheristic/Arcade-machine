@@ -7,16 +7,8 @@ PHASER'S MAJOR COMPONENTS USED:
 - Animation manager
 - Renderers
 - Timers
-- State machine?
-
-CHECKLIST
-
-- Create clickable note system
-- Sound
-
-STRETCH
-- Make nicer fight backgrounds that randomize
-- Get garageband running for music composition
+- State machine
+- Event Emitters
 
 
 */
