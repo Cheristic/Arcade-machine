@@ -93,6 +93,7 @@ class Menu extends Phaser.Scene {
         gameEventManager.shutdown();
         if (restarted) {
             this.scene.get('playScene').scene.restart(mode);
+            this.scene.stop('menuScene');
         } else {
             this.scene.start('playScene', mode);
         }
@@ -113,8 +114,7 @@ class MenuSelect1P extends State {
         }
         if (Phaser.Input.Keyboard.JustDown(keys.keySelect1) || Phaser.Input.Keyboard.JustDown(keys.keySelect2)) {
             gameEventManager.emit('startGame', "1");
-            let rand = Phaser.Math.RND.between(0, 2);
-            scene.sound.play(`block${rand}`, {volume: 1});
+            scene.sound.play(`ding`, {volume: 1});
         }
     }
 }
@@ -132,8 +132,7 @@ class MenuSelect2P extends State {
         }
         if (Phaser.Input.Keyboard.JustDown(keys.keySelect1) || Phaser.Input.Keyboard.JustDown(keys.keySelect2)) {
             gameEventManager.emit('startGame', "2");
-            let rand = Phaser.Math.RND.between(0, 2);
-            scene.sound.play(`block${rand}`, {volume: 1});
+            scene.sound.play(`ding`, {volume: 1});
         }
     }
 }

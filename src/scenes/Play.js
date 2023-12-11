@@ -97,8 +97,6 @@ class Play extends Phaser.Scene {
 
     endGame(fighter) {
         gameActive = false;
-        if (this.mode == "1") scoreEventManager.emit('hit', Math.ceil(this.gameTimer.getRemainingSeconds())); // Update clock score
-        this.gameTimer.remove(false);
         this.sound.play(`win`, {volume: 1});
         if (fighter == null) { // TIME RAN OUT
             this.gameTimerText.text = 0;
@@ -125,7 +123,7 @@ class Play extends Phaser.Scene {
                 this.updateGroup.add(this.explosion);
                 this.explosion.anims.play('explosion');
                 this.scene.launch('gameOverScene', {winner: this.luigiFighter, loser: this.marioFighter, tie: "no"});
-            } else { // MARIO WINDS
+            } else { // MARIO WINS
                 this.lugHealthBarG.scaleX = 0;
                 this.explosion.setPosition(scr_width/2-120, scr_height/2-140)
                 this.updateGroup.add(this.explosion);
@@ -133,6 +131,39 @@ class Play extends Phaser.Scene {
                 this.scene.launch('gameOverScene', {winner: this.marioFighter, loser: this.luigiFighter, tie: "no"});
             }  
         }
+        if (this.mode == "1" && fighter == "mario") { // Add clock score
+            this.clockScore(Math.ceil(this.gameTimer.getRemainingSeconds()));
+            
+        }
+        this.gameTimer.remove(false);
+    }
+
+    clockScore(currScore) {
+        this.time.delayedCall(80, () => {
+            if (currScore > 0) {
+                currScore--;
+                this.gameTimerText.text = currScore;
+                scoreEventManager.emit('hit', 1)
+                this.sound.play(`ding`, {volume: .25});
+                this.clockScore(currScore)
+            } else {
+                this.healthScore(this.luigiFighter.currentHealth)
+            }
+        }, null, this);
+    }
+
+    healthScore(currHealth) {
+        this.time.delayedCall(80, () => {
+            if (currHealth > 0) {
+                currHealth-=5;
+                this.lugHealthBarG.scaleX = currHealth/100;
+                scoreEventManager.emit('hit', 1)
+                this.sound.play(`ding`, {volume: .25});
+                this.healthScore(currHealth)
+            } else {
+                this.lugHealthBarG.scaleX = 0;
+            }
+        }, null, this);
     }
 
     onDestroy() {

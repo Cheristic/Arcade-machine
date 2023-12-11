@@ -102,6 +102,7 @@ class Load extends Phaser.Scene {
         this.load.audio('super_dmg1', ['./assets/super_dmg1_sfx.wav'])
         this.load.audio('super_dmg2', ['./assets/super_dmg2_sfx.wav'])
         this.load.audio('win', ['./assets/win_sfx.wav'])
+        this.load.audio('ding', ['./assets/ding_sfx.wav'])
         this.load.audio('explosion', ['./assets/explosion_sfx.wav'])
 
         this.load.plugin('rexquadimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexquadimageplugin.min.js', true);

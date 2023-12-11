@@ -153,7 +153,7 @@ class UI extends Phaser.Scene {
         } else if (hit_type == "reset") {
             this.score = 0;
         } else { // its the timer score
-            this.score += hit_type * 200
+            this.score += hit_type * 400
         }
         this.scoreText.text = this.score;
     }

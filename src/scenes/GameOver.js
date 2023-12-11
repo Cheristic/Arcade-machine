@@ -60,7 +60,8 @@ class GameOver extends Phaser.Scene {
             restarted = true;
             this.scene.get('playScene').onDestroy();
             this.scene.stop('playScene');
-            this.scene.start('menuScene');
+            this.scene.get('menuScene').scene.restart();
+            this.scene.stop('gameOverScene');
         }
     }
 }
