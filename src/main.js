@@ -30,13 +30,6 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_BOTH,
         zoom: 0.5
     },
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: {x: 0, y: 0},
-            debug: true
-        }
-    },
     scene: [ Load, Menu, Play, GameOver, UI] 
 };
 

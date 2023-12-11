@@ -13,6 +13,7 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
 
         this.currentHealth = 100;
 
+        // All possible moves/states for fighter
         this.fighterFSM = new StateMachine('idle', {
             idle: new IdleState(),
             high: new HighHitState(),
@@ -44,7 +45,7 @@ class Fighter extends Phaser.Physics.Arcade.Sprite {
     }  
 
     handleMoveCheck(fighterType, move) {
-        if(fighterType == this.fighterType) return;
+        if(fighterType == this.fighterType) return; // I didn't know how else to code this so if fighter is checking itself, it returns
         if (this.currentState == "hit" || this.currentState == "block") return;
 
         if (this.currentState == "idle") {
@@ -250,6 +251,7 @@ class LowBlockState extends State {
 
 class DamagedState extends State {
     enter(scene, fighter) {
+        // Player is hit
         if (!gameActive) return;
         fighter.anims.stop();
         fighter.setTexture(fighter.hitAnim);
@@ -262,6 +264,7 @@ class DamagedState extends State {
 
 class BlockedState extends State {
     enter(scene, fighter) {
+        // Player has blocked attack
         if (!gameActive) return;
         fighter.anims.stop();
         fighter.setTexture(fighter.blockAnim);

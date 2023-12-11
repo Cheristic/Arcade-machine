@@ -31,6 +31,7 @@ class UI extends Phaser.Scene {
         this.input.on('pointerup', (pointer, gameObjects) => {
             if (gameObjects == null || gameObjects[0] == null || gameObjects[0].name != "note-small" || this.noteIsOpened) return;
             if (!gameObjects[0].isBeingDragged) {
+                // CLICKED ON NOTE, OPEN IT UP
                 this.noteIsOpened = true;
                 this.openNote(gameObjects[0].note_index)
             }
@@ -61,6 +62,7 @@ class UI extends Phaser.Scene {
         }
 
         // from https://webtips.dev/webtips/phaser/interactive-buttons-in-phaser3
+        // X button for big notes (start hidden)
         this.noteXButton = this.add.text(width/2-100, height/2-200, 'X', textConfig)
         .setOrigin(0.5)
         .setPadding(10)
@@ -89,6 +91,7 @@ class UI extends Phaser.Scene {
         this.score = 0;
         this.scoreText = this.add.text(560, 18, this.score, scoreTextConfig).setOrigin(1, 0);
 
+        // Render perspective
         this.speckContainer = this.add.rexContainerLite(0 ,0, width, height);
         this.image = this.add.rexPerspectiveRenderTexture({
             x: 400,
@@ -117,6 +120,7 @@ class UI extends Phaser.Scene {
     }
 
     openNote(note_index) {
+        // Set the corresponding big note to visible and bring to front
         this.currNoteIndex = note_index;
         this.bigNotes.getChildren()[note_index].visible = true;
         this.bigNotes.getChildren()[note_index].depth = 10;
@@ -125,6 +129,7 @@ class UI extends Phaser.Scene {
     }
 
     addRemainingNotes() {
+        // This is called on the first restart, it spawns the remaining notes for the tutorial
         let note1 = new Note(this, 70, height-300, 1);
         this.smallNotes = this.add.group([note1]);
         this.input.setDraggable(this.smallNotes.getChildren());
@@ -138,6 +143,7 @@ class UI extends Phaser.Scene {
     }
 
     updateScore(hit_type) {
+        // Event emitter is linked here whenever an attack on the bot is initiated or the 1P game ends
         if (hit_type == "block-hit") {
             this.score += 500;
         } else if (hit_type == "super-hit") {
@@ -147,7 +153,6 @@ class UI extends Phaser.Scene {
         } else if (hit_type == "reset") {
             this.score = 0;
         } else { // its the timer score
-            console.log(hit_type)
             this.score += hit_type * 200
         }
         this.scoreText.text = this.score;

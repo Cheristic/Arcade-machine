@@ -10,7 +10,7 @@ class GameOver extends Phaser.Scene {
             data.winner.anims.play(data.winner.winAnim, true);
             data.loser.anims.stop();
             data.loser.anims.play(data.loser.winAnim, true);
-        } else {
+        } else { // NOT TIE
             data.winner.anims.stop();
             data.winner.anims.play(data.winner.winAnim, true);
             data.loser.anims.stop();
@@ -52,6 +52,7 @@ class GameOver extends Phaser.Scene {
 
     update() {
         if (this.keyR.isDown && !this.restart) {
+            // RESTART THE GAME
             this.restart = true;
             if (!restarted) {
                 this.scene.get('UIScene').addRemainingNotes();

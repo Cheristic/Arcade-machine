@@ -13,6 +13,7 @@ class FighterBot extends Phaser.Physics.Arcade.Sprite {
 
         this.currentHealth = 100;
 
+        // Object to pass through AI's state machine
         this.botStateData = {
             idle_timer: null,
             block_timer: null,
@@ -22,6 +23,7 @@ class FighterBot extends Phaser.Physics.Arcade.Sprite {
             prev_state: null
         }
 
+        // All possible moves/states for fighter
         this.fighterFSM = new StateMachine('idle', {
             idle: new IdleBotState(),
             high: new HighHitBotState(),
@@ -42,6 +44,7 @@ class FighterBot extends Phaser.Physics.Arcade.Sprite {
 
         moveEventManager.on("opponentAttack", this.handleMoveCheck, this)
         
+        // Hierarchical Finite State Machine for Bot AI
         this.botFSM = new StateMachine('idle', {
             idle: new AIIdleState(),
             block: new AIBlockState(),
@@ -117,9 +120,10 @@ class FighterBot extends Phaser.Physics.Arcade.Sprite {
 
 class AIIdleState extends State {
     enter(scene, fighter, enemy, data) {
+        // ### STAGE 1 - IDLE ### Fighter remains idle for a random period of time before switching to STAGE 2 - BLOCK
         if (!gameActive) return;
         fighter.currentAIState = "idle";
-        fighter.fighterFSM.transition('idle');
+        fighter.fighterFSM.transition('idle'); // set fighter to IDLE
         if (data.idle_timer == null) { // start timer
             let timerLength = Phaser.Math.RND.between(350, 650);
             data.idle_timer = scene.time.delayedCall(timerLength, () => {
@@ -139,6 +143,7 @@ class AIIdleState extends State {
 
 class AIBlockState extends State {
     enter(scene, fighter, enemy, data) {
+        // ### STAGE 2 - BLOCK ### Fighter attempts to block the enemy's corresponding block/hit and switches 1-3 times total before going to stage 3
         if (!gameActive) return;
         fighter.currentAIState = "block";
         if (data.block_count <= 0) { // initialize block phase
@@ -184,6 +189,7 @@ class AIBlockState extends State {
 
 class AIAttackState extends State {
     enter(scene, fighter, enemy, data) {
+        // ### STAGE 3 - ATTACK ### Fighter sees the enemy's current position and chooses either a normal hit or super hit
         if (!gameActive) return;
         fighter.currentAIState = "attack";
         let superMove = Phaser.Math.RND.between(1, 2);
@@ -207,6 +213,7 @@ class AIAttackState extends State {
 
         data.attack_timer_length = Phaser.Math.RND.between(200, 500);
         data.attack_timer = scene.time.delayedCall(data.attack_timer_length, () => {
+            // After blocking, execute move
             data.idle_timer = null;
             fighter.fighterFSM.transition(selectedMove);
         }, null, this);
@@ -329,12 +336,14 @@ class LowBlockBotState extends State {
 
 class DamagedBotState extends State {
     enter(scene, fighter, enemy, data) {
+        // ### STAGE 4 - INTERRUPT ### AI is interrupted by hit and returns back to whichever stage it was at afterwards
         if (!gameActive) return;
         fighter.anims.stop();
         fighter.setTexture(fighter.hitAnim);
         fighter.currentState = "hit";
         fighter.botFSM.transition('hit');
         scene.time.delayedCall(fighter.hitDelay, () => {
+            // Transition the AI's state back
             fighter.botFSM.transition(data.prev_state)
         }, null, this);
     }
@@ -342,12 +351,14 @@ class DamagedBotState extends State {
 
 class BlockedBotState extends State {
     enter(scene, fighter, enemy, data) {
+        // ### STAGE 4 - INTERRUPT ### AI is interrupted by hit and returns back to whichever stage it was at afterwards
         if (!gameActive) return;
         fighter.anims.stop();
         fighter.setTexture(fighter.blockAnim);
         fighter.currentState = "block";
         fighter.botFSM.transition('blocked');
         scene.time.delayedCall(fighter.blockDelay, () => {
+            // Transition the AI's state back
             fighter.botFSM.transition(data.prev_state)
         }, null, this);
     }

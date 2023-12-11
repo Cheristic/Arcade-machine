@@ -17,9 +17,6 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         };
 
-        //this.add.text(game.config.width/2,game.config.height/2+100,
-        //'Press SPACE to Begin', menuConfig).setOrigin(0.5);
-
         menuConfig.fontSize = '40px';
         this.menuText = this.add.text(scr_width/2,250,
         'ARCADE MACHINE\nfrom\nANIMAL CROSSING', menuConfig).setOrigin(0.5);
@@ -30,6 +27,7 @@ class Menu extends Phaser.Scene {
 
         this.selector = this.add.sprite(scr_width/2-80, scr_height/2+86, 'selector');
 
+        // Create object to pass to state machine holding key inputs
         this.menuKeyInputs = {
             keyUp1: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
             keySelect1: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
@@ -62,11 +60,10 @@ class Menu extends Phaser.Scene {
         this.menuText2 = this.add.text(scr_width/2,scr_height/2+100,
         '1P START\n2P START', selectorTextConfig).setOrigin(0.5);
 
-        selectorTextConfig.fontSize = '14px'
-        //this.add.text(game.config.width/2+140,game.config.height/2+86,
-        //'(COMING SOON)', selectorTextConfig).setOrigin(0.5);
+        // Set score to 0
         scoreEventManager.emit('hit', 'reset');
 
+        // Create perspective renderer
         this.speckContainer = this.add.rexContainerLite(0 ,0, width, height);
         this.image = this.add.rexPerspectiveRenderTexture({
             x: 399,
@@ -95,7 +92,6 @@ class Menu extends Phaser.Scene {
     startGame(mode) {
         gameEventManager.shutdown();
         if (restarted) {
-            //this.scene.get('playScene').onDestroy();
             this.scene.get('playScene').scene.restart(mode);
         } else {
             this.scene.start('playScene', mode);
@@ -106,9 +102,10 @@ class Menu extends Phaser.Scene {
 
 class MenuSelect1P extends State {
     enter(scene, selector, keys) {
-        selector.setPosition(scr_width/2-80, scr_height/2+86);
+        selector.setPosition(scr_width/2-80, scr_height/2+86); // Set selector position
     }
     execute(scene, selector, keys) {
+        // Navigate through menu and check for Select
         if(Phaser.Input.Keyboard.JustDown(keys.keyUp1) || Phaser.Input.Keyboard.JustDown(keys.keyUp2)
         || Phaser.Input.Keyboard.JustDown(keys.keyDown1) || Phaser.Input.Keyboard.JustDown(keys.keyDown2)) {
             this.stateMachine.transition('twoP');
@@ -124,9 +121,10 @@ class MenuSelect1P extends State {
 
 class MenuSelect2P extends State {
     enter(scene, selector, keys) {
-        selector.setPosition(scr_width/2-80, scr_height/2+108);
+        selector.setPosition(scr_width/2-80, scr_height/2+108); // Set selector position
     }
     execute(scene, selector, keys) {
+        // Navigate through menu and check for Select
         if(Phaser.Input.Keyboard.JustDown(keys.keyUp1) || Phaser.Input.Keyboard.JustDown(keys.keyUp2)
         || Phaser.Input.Keyboard.JustDown(keys.keyDown1) || Phaser.Input.Keyboard.JustDown(keys.keyDown2)) {
             this.stateMachine.transition('oneP');
