@@ -58,8 +58,13 @@ class Menu extends Phaser.Scene {
             },
             fixedWidth: 0
         };
+        
         this.add.text(game.config.width/2,game.config.height/2+100,
         '1P START\n2P START', selectorTextConfig).setOrigin(0.5);
+
+        selectorTextConfig.fontSize = '14px'
+        this.add.text(game.config.width/2+140,game.config.height/2+86,
+        '(COMING SOON)', selectorTextConfig).setOrigin(0.5);
 
     }
 
@@ -67,13 +72,13 @@ class Menu extends Phaser.Scene {
         this.selectorFSM.step();
     }
 
-    startGame() {
+    startGame(mode) {
         gameEventManager.shutdown();
         if (restarted) {
             //this.scene.get('playScene').onDestroy();
-            this.scene.get('playScene').scene.restart();
+            this.scene.get('playScene').scene.restart(mode);
         } else {
-            this.scene.start('playScene');
+            this.scene.start('playScene', mode);
         }
     }
 
@@ -90,7 +95,9 @@ class MenuSelect1P extends State {
             return;
         }
         if (Phaser.Input.Keyboard.JustDown(keys.keySelect1) || Phaser.Input.Keyboard.JustDown(keys.keySelect2)) {
-            gameEventManager.emit('startGame');
+            //gameEventManager.emit('startGame', "1");
+            let rand = Phaser.Math.RND.between(0, 2);
+            scene.sound.play(`block${rand}`, {volume: 1});
         }
     }
 }
@@ -106,7 +113,7 @@ class MenuSelect2P extends State {
             return;
         }
         if (Phaser.Input.Keyboard.JustDown(keys.keySelect1) || Phaser.Input.Keyboard.JustDown(keys.keySelect2)) {
-            gameEventManager.emit('startGame');
+            gameEventManager.emit('startGame', "2");
         }
     }
 }

@@ -53,6 +53,9 @@ class GameOver extends Phaser.Scene {
     update() {
         if (this.keyR.isDown && !this.restart) {
             this.restart = true;
+            if (!restarted) {
+                this.scene.get('UIScene').addRemainingNotes();
+            }
             restarted = true;
             this.scene.get('playScene').onDestroy();
             this.scene.stop('playScene');

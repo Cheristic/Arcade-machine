@@ -2,11 +2,16 @@
 
 Ethan Heffan
 
+PHASER'S MAJOR COMPONENTS USED:
+- Text objects
+- Animation manager
+- Renderers
+- Timers
+- State machine?
+
 CHECKLIST
 
-- Create luigi sprites/animations
 - Create clickable note system
-- Main Menu navigation
 - Sound
 
 STRETCH
@@ -32,7 +37,7 @@ let config = {
             debug: true
         }
     },
-    scene: [ Load, Menu, Play, GameOver] 
+    scene: [ Load, Menu, Play, GameOver, UI] 
 };
 
 let game = new Phaser.Game(config);

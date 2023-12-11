@@ -88,6 +88,10 @@ class Load extends Phaser.Scene {
 
         this.load.image('selector', './assets/selector.png');
 
+        this.load.image('note-big0', './assets/note-big0.png');
+        this.load.image('note-big1', './assets/note-big1.png');
+        this.load.image('note-small', './assets/note-small.png');
+
         this.load.audio('block0', ['./assets/block0_sfx.wav'])
         this.load.audio('block1', ['./assets/block1_sfx.wav'])
         this.load.audio('block2', ['./assets/block2_sfx.wav'])
@@ -200,5 +204,6 @@ class Load extends Phaser.Scene {
 
 
         this.scene.launch('menuScene');
+        this.scene.launch('UIScene');
     }
 }

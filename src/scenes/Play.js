@@ -12,6 +12,10 @@ class Play extends Phaser.Scene {
 
     }
 
+    init(mode) {
+        this.mode = mode;
+    }
+
     create() {
         // This will activate after 3 seconds and the game will begin
         this.countdownTimer = this.time.delayedCall(3000, () => {
@@ -31,9 +35,17 @@ class Play extends Phaser.Scene {
         });
 
         this.fightbg = this.add.sprite(scr_width/2, scr_height/2, "fight-bg0").setOrigin(0.5);
-        this.marioFighter = new FighterMario(this, scr_width/2+40, scr_height/2).setOrigin(0.5);
         this.luigiFighter = new FighterLuigi(this, scr_width/2-40, scr_height/2).setOrigin(0.5);
         this.luigiFighter.flipX = true;
+        if (this.mode == "2") {
+            // 2 PLAYERS
+            this.marioFighter = new FighterMario(this, scr_width/2+40, scr_height/2).setOrigin(0.5);
+        } else {
+            // 1 PLAYER
+            this.marioFighter = new FighterMario(this, scr_width/2+40, scr_height/2).setOrigin(0.5);
+        }
+        
+        
 
         
         this.lugHealthBarY = this.add.sprite(scr_width/2-280, 50, "health-bar-yellow").setOrigin(0, 0.5);
