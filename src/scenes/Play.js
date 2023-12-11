@@ -42,7 +42,7 @@ class Play extends Phaser.Scene {
             this.marioFighter = new FighterMario(this, scr_width/2+40, scr_height/2).setOrigin(0.5);
         } else {
             // 1 PLAYER
-            this.marioFighter = new FighterMario(this, scr_width/2+40, scr_height/2).setOrigin(0.5);
+            this.marioFighter = new FighterBot(this, scr_width/2+40, scr_height/2, this.luigiFighter).setOrigin(0.5);
         }
         
         
@@ -98,6 +98,7 @@ class Play extends Phaser.Scene {
             this.lugHealthBarG.scaleX = this.luigiFighter.currentHealth/100;
 
             this.marioFighter.fighterFSM.step();
+            if (this.mode == "1") this.marioFighter.botFSM.step();
             this.luigiFighter.fighterFSM.step();
 
             // Update timer

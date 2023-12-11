@@ -95,7 +95,7 @@ class MenuSelect1P extends State {
             return;
         }
         if (Phaser.Input.Keyboard.JustDown(keys.keySelect1) || Phaser.Input.Keyboard.JustDown(keys.keySelect2)) {
-            //gameEventManager.emit('startGame', "1");
+            gameEventManager.emit('startGame', "1");
             let rand = Phaser.Math.RND.between(0, 2);
             scene.sound.play(`block${rand}`, {volume: 1});
         }
