@@ -51,7 +51,7 @@ class Menu extends Phaser.Scene {
             fontStyle: 'Bold',
             fontSize: '20px',
             color: '#A9E010',
-            align: 'left',
+            align: 'center',
             padding: {
                 top: 5,
                 bottom: 5,
@@ -63,8 +63,8 @@ class Menu extends Phaser.Scene {
         '1P START\n2P START', selectorTextConfig).setOrigin(0.5);
 
         selectorTextConfig.fontSize = '14px'
-        this.add.text(game.config.width/2+140,game.config.height/2+86,
-        '(COMING SOON)', selectorTextConfig).setOrigin(0.5);
+        //this.add.text(game.config.width/2+140,game.config.height/2+86,
+        //'(COMING SOON)', selectorTextConfig).setOrigin(0.5);
 
     }
 
@@ -114,6 +114,8 @@ class MenuSelect2P extends State {
         }
         if (Phaser.Input.Keyboard.JustDown(keys.keySelect1) || Phaser.Input.Keyboard.JustDown(keys.keySelect2)) {
             gameEventManager.emit('startGame', "2");
+            let rand = Phaser.Math.RND.between(0, 2);
+            scene.sound.play(`block${rand}`, {volume: 1});
         }
     }
 }

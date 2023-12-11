@@ -35,7 +35,7 @@ class FighterBot extends Phaser.Physics.Arcade.Sprite {
         }, [scene, this, enemy, this.botStateData]);
 
         this.blockDelay = 500;
-        this.hitDelay = 1000;
+        this.hitDelay = 500;
         this.attackAnticipationFrames = 4;
 
         this.isAttacking = false;
