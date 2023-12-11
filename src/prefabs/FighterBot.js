@@ -81,6 +81,7 @@ class FighterBot extends Phaser.Physics.Arcade.Sprite {
             this.fighterFSM.transition('block');
             let rand = Phaser.Math.RND.between(0, 2);
             this.scene.sound.play(`block${rand}`, {volume: 1});
+            scoreEventManager.emit('hit', 'block-hit');
             return;
         } else if (move == "high" && this.currentState == "block_high" 
         || move == "mid" &&  this.currentState == "block_mid"
@@ -99,6 +100,7 @@ class FighterBot extends Phaser.Physics.Arcade.Sprite {
             this.fighterFSM.transition("hit");
             let rand = Phaser.Math.RND.between(0, 2);
             this.scene.sound.play(`super_dmg${rand}`, {volume: 1});
+            scoreEventManager.emit('hit', 'super-hit');
             return;
         }
 
@@ -107,6 +109,7 @@ class FighterBot extends Phaser.Physics.Arcade.Sprite {
         this.fighterFSM.transition("hit");
         let rand = Phaser.Math.RND.between(0, 2);
         this.scene.sound.play(`dmg${rand}`, {volume: 1});
+        scoreEventManager.emit('hit', 'norm-hit');
         return;
     }
 

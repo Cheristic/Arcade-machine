@@ -3,15 +3,6 @@ class Play extends Phaser.Scene {
         super("playScene");
     }
 
-    preload() {
-        if (restarted) return;
-        this.load.plugin('rexquadimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexquadimageplugin.min.js', true);
-        this.load.plugin('rexcontainerliteplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcontainerliteplugin.min.js', true);
-        this.load.plugin('rexquadimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexquadimageplugin.min.js', true);
-        this.load.plugin('rexperspectiveimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexperspectiveimageplugin.min.js', true);
-
-    }
-
     init(mode) {
         this.mode = mode;
     }
@@ -119,6 +110,7 @@ class Play extends Phaser.Scene {
 
     endGame(fighter) {
         gameActive = false;
+        if (this.mode == "1") scoreEventManager.emit('hit', Math.ceil(this.gameTimer.getRemainingSeconds()));
         this.gameTimer.remove(false);
         this.sound.play(`win`, {volume: 1});
         if (fighter == null) { // TIME RAN OUT

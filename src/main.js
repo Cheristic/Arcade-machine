@@ -54,3 +54,4 @@ let timerLength = 60000;
 
 let moveEventManager = new Phaser.Events.EventEmitter();
 let gameEventManager = new Phaser.Events.EventEmitter();
+let scoreEventManager = new Phaser.Events.EventEmitter();

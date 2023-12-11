@@ -7,7 +7,7 @@ class UI extends Phaser.Scene {
 
     create() {
         // Create initial small note
-        var note0 = new Note(this, width-70, height-400, 0);
+        var note0 = new Note(this, width/2+30, height/2+130, 0);
         this.smallNotes = this.add.group([note0]);
         this.input.setDraggable(this.smallNotes.getChildren());
         this.noteIsOpened = false;
@@ -50,8 +50,6 @@ class UI extends Phaser.Scene {
             fixedWidth: 0
         };
 
-
-
         this.currNoteIndex = 0;
 
         // Create big notes (start hidden)
@@ -74,17 +72,56 @@ class UI extends Phaser.Scene {
         })
         .on('pointerover', () => this.noteXButton.setStyle({ fill: '#f39c12' }))
         .on('pointerout', () => this.noteXButton.setStyle({ fill: textConfig.color }))
-        .setVisible(false)
+        .setVisible(false);
+
+        let scoreTextConfig = {
+            fontFamily: 'DSEG7',
+            fontStyle: 'Bold',
+            fontSize: '80px',
+            color: '#A9E010',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5,
+            }
+        };
+
+        this.score = 0;
+        this.scoreText = this.add.text(560, 18, this.score, scoreTextConfig).setOrigin(1, 0);
+
+        this.speckContainer = this.add.rexContainerLite(0 ,0, width, height);
+        this.image = this.add.rexPerspectiveRenderTexture({
+            x: 400,
+            y: 90,
+            width: scr_width-50,
+            height: 120,
+            add: true
+        });
+        this.speckContainer.addMultiple([this.scoreText]);
+        this.updateGroup = this.add.group([this.scoreText]);        
+        this.perspective = this.plugins.get('rexperspectiveimageplugin').addContainerPerspective(this.speckContainer, {
+            useParentBounds: false,
+        });
+        this.image.transformVerts(0, 0, 0, .11, 0, 0)
+        this.perspective.enter();
+        
+        scoreEventManager.on('hit', this.updateScore, this);
+
     }
 
     update() {
         this.scene.bringToTop();
+        // Render skewed objects
+        this.image.rt.clear();
+        this.image.rt.draw(this.updateGroup.getChildren());
     }
 
     openNote(note_index) {
         this.currNoteIndex = note_index;
         this.bigNotes.getChildren()[note_index].visible = true;
+        this.bigNotes.getChildren()[note_index].depth = 10;
         this.noteXButton.visible = true;
+        this.noteXButton.depth = 11;
     }
 
     addRemainingNotes() {
@@ -98,5 +135,21 @@ class UI extends Phaser.Scene {
             this.bigNotes.add(currNote);
         }
         this.noteXButton.depth = 10;
+    }
+
+    updateScore(hit_type) {
+        if (hit_type == "block-hit") {
+            this.score += 500;
+        } else if (hit_type == "super-hit") {
+            this.score += 4000;
+        } else if (hit_type == "norm-hit") {
+            this.score += 1500
+        } else if (hit_type == "reset") {
+            this.score = 0;
+        } else { // its the timer score
+            console.log(hit_type)
+            this.score += hit_type * 200
+        }
+        this.scoreText.text = this.score;
     }
 }

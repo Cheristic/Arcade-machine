@@ -104,11 +104,17 @@ class Load extends Phaser.Scene {
         this.load.audio('win', ['./assets/win_sfx.wav'])
         this.load.audio('explosion', ['./assets/explosion_sfx.wav'])
 
+        this.load.plugin('rexquadimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexquadimageplugin.min.js', true);
+        this.load.plugin('rexcontainerliteplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcontainerliteplugin.min.js', true);
+        this.load.plugin('rexquadimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexquadimageplugin.min.js', true);
+        this.load.plugin('rexperspectiveimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexperspectiveimageplugin.min.js', true);
+
+
     }
 
     create() {
-        // MARIO ANIMATIONS
         this.background = this.add.image(0,0,"machine-bg").setOrigin(0);
+        // MARIO ANIMATIONS
         this.anims.create({
             key: 'mar-idle',
             frames: this.anims.generateFrameNames('mar-idle', {

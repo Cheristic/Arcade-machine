@@ -20,15 +20,15 @@ class Menu extends Phaser.Scene {
         //this.add.text(game.config.width/2,game.config.height/2+100,
         //'Press SPACE to Begin', menuConfig).setOrigin(0.5);
 
-        menuConfig.fontSize = '40px'
-        this.add.text(game.config.width/2,scr_height-200,
+        menuConfig.fontSize = '40px';
+        this.menuText = this.add.text(scr_width/2,250,
         'ARCADE MACHINE\nfrom\nANIMAL CROSSING', menuConfig).setOrigin(0.5);
 
         this.started = false;
 
         this.spaceKEY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        this.selector = this.add.sprite(width/2-80, height/2+86, 'selector');
+        this.selector = this.add.sprite(scr_width/2-80, scr_height/2+86, 'selector');
 
         this.menuKeyInputs = {
             keyUp1: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
@@ -59,17 +59,37 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         };
         
-        this.add.text(game.config.width/2,game.config.height/2+100,
+        this.menuText2 = this.add.text(scr_width/2,scr_height/2+100,
         '1P START\n2P START', selectorTextConfig).setOrigin(0.5);
 
         selectorTextConfig.fontSize = '14px'
         //this.add.text(game.config.width/2+140,game.config.height/2+86,
         //'(COMING SOON)', selectorTextConfig).setOrigin(0.5);
+        scoreEventManager.emit('hit', 'reset');
+
+        this.speckContainer = this.add.rexContainerLite(0 ,0, width, height);
+        this.image = this.add.rexPerspectiveRenderTexture({
+            x: 399,
+            y: 515,
+            width: scr_width,
+            height: scr_height,
+            add: true
+        });
+        this.speckContainer.addMultiple([this.menuText, this.menuText2, this.selector]);
+        this.updateGroup = this.add.group([this.menuText, this.menuText2, this.selector]);        
+        this.perspective = this.plugins.get('rexperspectiveimageplugin').addContainerPerspective(this.speckContainer, {
+            useParentBounds: false,
+        });
+        this.image.transformVerts(0, 0, 0, -.210, 0, 0)
+        this.perspective.enter();
 
     }
 
     update() {
         this.selectorFSM.step();
+        // Render skewed objects
+        this.image.rt.clear();
+        this.image.rt.draw(this.updateGroup.getChildren());
     }
 
     startGame(mode) {
@@ -86,7 +106,7 @@ class Menu extends Phaser.Scene {
 
 class MenuSelect1P extends State {
     enter(scene, selector, keys) {
-        selector.setPosition(width/2-80, height/2+86);
+        selector.setPosition(scr_width/2-80, scr_height/2+86);
     }
     execute(scene, selector, keys) {
         if(Phaser.Input.Keyboard.JustDown(keys.keyUp1) || Phaser.Input.Keyboard.JustDown(keys.keyUp2)
@@ -104,7 +124,7 @@ class MenuSelect1P extends State {
 
 class MenuSelect2P extends State {
     enter(scene, selector, keys) {
-        selector.setPosition(width/2-80, height/2+108);
+        selector.setPosition(scr_width/2-80, scr_height/2+108);
     }
     execute(scene, selector, keys) {
         if(Phaser.Input.Keyboard.JustDown(keys.keyUp1) || Phaser.Input.Keyboard.JustDown(keys.keyUp2)
