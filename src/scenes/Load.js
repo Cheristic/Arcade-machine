@@ -250,10 +250,7 @@ class Load extends Phaser.Scene {
                 
                })
             }, null, this);
-        })
-        
-
-        
+        });
     }
 
     update() {

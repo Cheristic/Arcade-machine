@@ -139,6 +139,8 @@ class Play extends Phaser.Scene {
             }
         }
         this.gameTimer.remove(false);
+
+        if (this.mode == "2" && this.marioFighter.currentHealth == 100 && this.luigiFighter.currentHealth == 100) this.scene.get('UIScene').unlockNote(8); // Pacifist
     }
 
     clockScore(currScore) {

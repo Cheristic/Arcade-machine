@@ -10,7 +10,6 @@ class GameOver extends Phaser.Scene {
             data.winner.anims.play(data.winner.winAnim, true);
             data.loser.anims.stop();
             data.loser.anims.play(data.loser.winAnim, true);
-            this.unlockNote(8);
         } else { // NOT TIE
             data.winner.anims.stop();
             data.winner.anims.play(data.winner.winAnim, true);
