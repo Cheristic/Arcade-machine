@@ -131,9 +131,12 @@ class Play extends Phaser.Scene {
                 this.scene.launch('gameOverScene', {winner: this.marioFighter, loser: this.luigiFighter, tie: "no"});
             }  
         }
-        if (this.mode == "1" && fighter == "mario") { // Add clock score
-            this.clockScore(Math.ceil(this.gameTimer.getRemainingSeconds()));
-            
+        if (this.mode == "1") { // Add clock score and achievement
+            if (fighter == "luigi") this.scene.get('UIScene').unlockNote(3); // Lose unlocks note
+            else {
+                if (this.luigiFighter.currentHealth == 100) this.scene.get('UIScene').unlockNote(4); // Achievement for no damage
+                this.clockScore(Math.ceil(this.gameTimer.getRemainingSeconds())); 
+            }
         }
         this.gameTimer.remove(false);
     }

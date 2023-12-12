@@ -55,11 +55,16 @@ class UI extends Phaser.Scene {
 
         // Create big notes (start hidden)
         this.bigNotes = this.add.group();
-        for(let i = 0; i < 1; i++) {
+        for(let i = 0; i <= 8; i++) {
             let currNote = this.add.sprite(width/2, height/2, `note-big${i}`);
+            currNote.unlocked = false;
             currNote.setVisible(false);
             this.bigNotes.add(currNote);
         }
+        let currNote = this.add.sprite(width/2, height/2, `note-big-unlock`);
+        currNote.unlocked = false;
+        currNote.setVisible(false);
+        this.bigNotes.add(currNote);
 
         // from https://webtips.dev/webtips/phaser/interactive-buttons-in-phaser3
         // X button for big notes (start hidden)
@@ -105,7 +110,7 @@ class UI extends Phaser.Scene {
         this.perspective = this.plugins.get('rexperspectiveimageplugin').addContainerPerspective(this.speckContainer, {
             useParentBounds: false,
         });
-        this.image.transformVerts(0, 0, 0, .11, 0, 0)
+        this.image.transformVerts(0, 0, 0, .1, 0, 0)
         this.perspective.enter();
         
         scoreEventManager.on('hit', this.updateScore, this);
@@ -117,7 +122,7 @@ class UI extends Phaser.Scene {
         // Render skewed objects
         this.image.rt.clear();
         this.image.rt.draw(this.updateGroup.getChildren());
-    }
+    } 
 
     openNote(note_index) {
         // Set the corresponding big note to visible and bring to front
@@ -128,18 +133,21 @@ class UI extends Phaser.Scene {
         this.noteXButton.depth = 11;
     }
 
-    addRemainingNotes() {
-        // This is called on the first restart, it spawns the remaining notes for the tutorial
-        let note1 = new Note(this, 70, height-300, 1);
-        this.smallNotes = this.add.group([note1]);
-        this.input.setDraggable(this.smallNotes.getChildren());
-
-        for(let i = 1; i < 2; i++) {
-            let currNote = this.add.sprite(width/2, height/2, `note-big${i}`);
-            currNote.setVisible(false);
-            this.bigNotes.add(currNote);
+    unlockNote(note_index) {
+        if(note_index == 9) {
+            this.bigNotes.getChildren()[note_index].unlocked = true;
+            let note = new Note(this, 80, height-300, note_index);
+            this.input.setDraggable(note);
+            return false;
         }
-        this.noteXButton.depth = 10;
+        // Creates the corresponding small note object and returns whether it existed prior or not
+        if (!this.bigNotes.getChildren()[note_index].unlocked) {
+            this.bigNotes.getChildren()[note_index].unlocked = true;
+            let note = new Note(this, width/2, height/2, note_index);
+            this.input.setDraggable(note);
+            return false;
+        }
+        return true;
     }
 
     updateScore(hit_type) {
@@ -156,5 +164,9 @@ class UI extends Phaser.Scene {
             this.score += hit_type * 400
         }
         this.scoreText.text = this.score;
+        if (this.score >= 45000) this.unlockNote(5); // Point achievements
+        if (this.score >= 50000) this.unlockNote(6);
+        if (this.score >= 55000) this.unlockNote(7);
+
     }
 }

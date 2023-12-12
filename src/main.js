@@ -10,6 +10,7 @@ PHASER'S MAJOR COMPONENTS USED:
 - State machine
 - Event Emitters
 
+ADD CREDITS
 
 */
 let config = {

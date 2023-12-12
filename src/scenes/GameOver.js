@@ -10,6 +10,7 @@ class GameOver extends Phaser.Scene {
             data.winner.anims.play(data.winner.winAnim, true);
             data.loser.anims.stop();
             data.loser.anims.play(data.loser.winAnim, true);
+            this.unlockNote(8);
         } else { // NOT TIE
             data.winner.anims.stop();
             data.winner.anims.play(data.winner.winAnim, true);
@@ -47,15 +48,16 @@ class GameOver extends Phaser.Scene {
         gameActive = false;
 
         this.restart = false;
-
     }
 
     update() {
         if (this.keyR.isDown && !this.restart) {
             // RESTART THE GAME
             this.restart = true;
-            if (!restarted) {
-                this.scene.get('UIScene').addRemainingNotes();
+            if(this.scene.get('UIScene').unlockNote(1)) { // on first restart spawn Note 1 & Unlock
+                this.scene.get('UIScene').unlockNote(2); // 2nd restart unlock Note 2
+            } else {
+                this.scene.get('UIScene').unlockNote(9); // Unlock note list/credits
             }
             restarted = true;
             this.scene.get('playScene').onDestroy();

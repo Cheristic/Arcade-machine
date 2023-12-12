@@ -90,6 +90,14 @@ class Load extends Phaser.Scene {
 
         this.load.image('note-big0', './assets/note-big0.png');
         this.load.image('note-big1', './assets/note-big1.png');
+        this.load.image('note-big2', './assets/note-big2.png');
+        this.load.image('note-big3', './assets/note-big3.png');
+        this.load.image('note-big4', './assets/note-big4.png');
+        this.load.image('note-big5', './assets/note-big5.png');
+        this.load.image('note-big6', './assets/note-big6.png');
+        this.load.image('note-big7', './assets/note-big7.png');
+        this.load.image('note-big8', './assets/note-big8.png');
+        this.load.image('note-big-unlock', './assets/note-big-unlock.png');
         this.load.image('note-small', './assets/note-small.png');
 
         this.load.audio('block0', ['./assets/block0_sfx.wav'])
@@ -111,6 +119,7 @@ class Load extends Phaser.Scene {
         this.load.plugin('rexperspectiveimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexperspectiveimageplugin.min.js', true);
 
 
+        this.load.image('splash', './assets/splash.png');
     }
 
     create() {
@@ -209,8 +218,46 @@ class Load extends Phaser.Scene {
             repeat: -1
         });
 
+        // SPLASH SCREEN
+        this.splash = this.add.sprite(scr_width/2, scr_height/2, "splash").setOrigin(0.5);
 
-        this.scene.launch('menuScene');
-        this.scene.launch('UIScene');
+        // Create perspective renderer
+        this.speckContainer = this.add.rexContainerLite(0 ,0, width, height);
+        this.image = this.add.rexPerspectiveRenderTexture({
+            x: 399,
+            y: 515,
+            width: scr_width,
+            height: scr_height,
+            add: true
+        });
+        this.speckContainer.addMultiple([this.splash]);
+        this.perspective = this.plugins.get('rexperspectiveimageplugin').addContainerPerspective(this.speckContainer, {
+            useParentBounds: false,
+        });
+        this.image.transformVerts(0, 0, 0, -.210, 0, 0)
+        this.perspective.enter();
+        // Annoyingly obtuse series of tweens and timers for splash
+        this.splash.alpha = 0;
+        this.splashTween = this.tweens.add({targets: this.splash, alpha: 1, duration: 2000});
+        this.splashTween.on('complete', () => {
+            this.time.delayedCall(3000, () => {
+               this.splashTween = this.tweens.add({targets: this.splash, alpha: 0, duration: 1000});
+               this.splashTween.on('complete', () => {
+                this.time.delayedCall(500, () => {
+                    this.scene.launch('menuScene');
+                    this.scene.launch('UIScene');
+                }, null, this)
+                
+               })
+            }, null, this);
+        })
+        
+
+        
+    }
+
+    update() {
+        this.image.rt.clear();
+        this.image.rt.draw(this.splash);
     }
 }
